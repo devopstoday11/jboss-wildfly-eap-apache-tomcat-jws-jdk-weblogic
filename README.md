@@ -3,5 +3,5 @@ Ansible playbooks for automating the multi-tenant setup for Jboss Wildfly/EAP, J
 
 > These playbooks can be used in any environment without any worry.     
 
-middleware-ansible-role-playbooks -> this folder contains only ansible roles. 
-appeng-project-template -> this folder shows how to structure & write playbook(s) for your project, and use the ansible roles in your project's playbook. 
+- middleware-ansible-role-playbooks -> this folder contains only ansible roles. 
+- appeng-project-template -> this folder shows how to structure & write playbook(s) for your project, and use the ansible roles in your project's playbook. 
