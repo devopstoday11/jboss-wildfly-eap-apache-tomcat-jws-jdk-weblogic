@@ -1,0 +1,33 @@
+
+---
+- name: Cloning Git Repository
+  gather_facts: no
+  hosts: localhost
+  tasks:
+      - name: Cloning Git Repository of creating user
+        git:
+            repo: "https://github.com/i-adarsh/create-user.git"
+            dest: roles/create-user
+            clone: yes
+      
+      - name: Cloning Git Repository for creating directories
+        git:
+            repo: "https://github.com/i-adarsh/create-dir.git"
+            dest: roles/create-dir
+      
+      - name: Cloning Git Repository for Installing JBoss EAP
+        git:
+            repo: "https://github.com/i-adarsh/install-jboss.git"
+            dest: roles/install-jboss
+
+      - name: Cloning Git Repository for Applying patch
+        git:
+            repo: "https://github.com/i-adarsh/apply-jboss-patch.git"
+            dest: roles/apply-jboss-patch
+      
+      - name: Cloning Git Repository for Installing Java
+        git:
+            repo: "https://github.com/i-adarsh/install-java.git"
+            dest: roles/install-java
+      
+...

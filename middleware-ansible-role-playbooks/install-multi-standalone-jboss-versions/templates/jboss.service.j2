@@ -1,0 +1,5 @@
+[Unit]
+Description=JBoss Service File
+
+[Service]
+ExecStart=/bin/bash {{ jboss_eap_home }}/bin/./standalone.sh -b 0.0.0.0 

@@ -1,0 +1,54 @@
+---
+# tasks file for install-java
+- name: Register as user (i-adarsh) with password (somepass) and auto-subscribe to available content.
+  redhat_subscription:
+      state: present
+      username: i-adarsh
+      password: "{{ password }}"
+      autosubscribe: true
+
+- name: Installing softwares
+  yum:
+      name: 
+            - unzip
+      state: present
+          
+- name: Downloading Open JDK "{{ item.open_jdk_file }}"
+  get_url:
+      url: "{{ item.open_jdk_download_url }}"
+      dest: "{{ item.open_jdk_download_dir }}/{{ item.open_jdk_file }}"
+      owner: "{{ jdk_user }}"
+      group: "{{ jdk_group }}"
+  loop: "{{ open_jdk_details }}"
+  register: open_jdk_install
+
+- name: Downloading Oracle JDK "{{ item.oracle_jdk_file }}"
+  get_url:
+      url: "{{ item.oracle_jdk_download_url }}"
+      dest: "{{ item.oracle_jdk_download_dir }}/{{ item.oracle_jdk_file }}"
+      owner: "{{ jdk_user }}"
+      group: "{{ jdk_group }}"
+  loop: "{{ oracle_jdk_details }}"
+  register: oracle_jdk_install
+
+- name: Extracting JDK "{{ item.open_jdk_file }}"
+  unarchive:
+      src: "{{ item.open_jdk_download_dir }}/{{ item.open_jdk_file | basename }}"
+      dest: "{{ item.open_jdk_library_dest }}"
+      owner: "{{ jdk_user }}"
+      group: "{{ jdk_group }}"
+      mode: "{{ jdk_mode }}"
+      remote_src: yes
+  loop: "{{ open_jdk_details }}"
+
+- name: Extracting JDK "{{ item.oracle_jdk_file }}"
+  unarchive:
+      src: "{{ item.oracle_jdk_download_dir }}/{{ item.oracle_jdk_file | basename }}"
+      dest: "{{ item.oracle_jdk_library_dest }}"
+      owner: "{{ jdk_user }}"
+      group: "{{ jdk_group }}"
+      mode: "{{ jdk_mode }}"
+      remote_src: yes
+  loop: "{{ oracle_jdk_details }}"
+
+...

@@ -1,0 +1,8 @@
+---
+# tasks file for string_encrypt
+- name: Encrypting Files
+  shell: "ansible-vault encrypt_string --vault-password-file {{item.password_file}} {{ item.string_to_encrypt }} --name {{ item.name_of_variable }} >> {{item.file_name}} "
+  loop: "{{ encryption }}"
+  ignore_errors: yes
+
+# ansible-vault encrypt_string "appadm" --name "owner_username" >> secret.yaml

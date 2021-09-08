@@ -1,0 +1,101 @@
+---
+# tasks file for apply_patch
+- name: PATCH | Copy EAP patch file to {{ jboss_eap_download_dir }}/{{ jboss_eap_patch_file | basename }}
+  copy:
+    src: "{{ jboss_eap_patch_file }}"
+    dest: "{{ jboss_eap_download_dir }}"
+  when: jboss_eap_patch_file_url is not defined
+  
+- name: PATCH | Download EAP patch file to {{ jboss_eap_download_dir }}/{{ jboss_eap_patch_file | basename }}
+  get_url:
+    url: "{{ jboss_eap_patch_file_url }}"
+    dest: "{{ jboss_eap_download_dir }}"
+  when: jboss_eap_patch_file_url is defined
+
+# ====================================================
+- name: Determine current JBoss EAP patch info
+  become_user: "{{ jboss_eap_user }}"
+  become: yes
+  command: "{{ jboss_eap_home }}/bin/jboss-cli.sh {{ '--command=' ~ cmd | quote }}"
+  vars:
+    cmd: >-
+      patch info
+  register: patch_info
+
+- debug:
+    msg: "Current Patch Version: {{ patch_info.stdout }}"
+
+- name: Set Cumulative Patch ID
+  set_fact:
+    jboss_eap_current_patch_id: "{{ patch_info.stdout | regex_replace('(?s).*Cumulative patch ID: *(\\S+).*', '\\1') }}"
+
+- name: Determine available patch ID
+  become_user: "{{ jboss_eap_user }}"
+  become: yes
+  command: "{{ jboss_eap_home }}/bin/jboss-cli.sh {{ '--command=' ~ cmd | quote }}"
+  vars:
+    cmd: >-
+      patch inspect {{ jboss_eap_patch_dest }}
+  register: patch_inspect
+
+- debug:
+    msg: "Applying Patch Version: {{  patch_inspect.stdout }}"
+
+- name: Set fact jboss_eap_new_patch_id
+  set_fact:
+    jboss_eap_new_patch_id: "{{ patch_inspect.stdout | regex_replace('(?s).*Patch ID: *(\\S+).*', '\\1') }}" # new_patch
+
+
+- name: Checking Patch Version
+  debug:
+    msg: "Patch Level is up to date"
+  when: jboss_eap_current_patch_id == jboss_eap_new_patch_id
+
+- name: Checking Patch Version
+  debug:
+    msg: "Patch Level is up to date"
+  when: jboss_eap_current_patch_id > jboss_eap_new_patch_id
+
+- name: Checking Patch Version
+  debug:
+    msg: 
+      - "Latest Patch Available"
+      - "Patching Now ..."
+  when: jboss_eap_current_patch_id < jboss_eap_new_patch_id
+
+# Applying Patch if latest version is available
+- name: Apply JBoss EAP Patch
+  become_user: "{{ jboss_eap_user }}"
+  become: yes
+  command: "{{ jboss_eap_home }}/bin/jboss-cli.sh {{ cmd | quote }}"
+  vars:
+    cmd: >-
+      patch apply /files/{{ jboss_eap_patch_artifact_name }} --override-all
+  when: >-
+    jboss_eap_current_patch_id < jboss_eap_new_patch_id
+  register: patch_done
+
+# ====================================================
+
+# - name: Starting Jboss EAP Service
+#   service:
+#       name: jboss.service
+#       state: restarted
+#   when: patch_done is changed
+
+
+
+# - name: Starting JBoss Service
+#   become: yes
+#   script:
+#     cmd: script.sh
+  # shell: "(cd {{ jboss_eap_home }}/bin/; ./standalone.sh {{ cmd }})"
+  # vars:
+  #   cmd: >-
+  #     -b 0.0.0.0 &
+  # async: 10
+  # poll: 0
+  # shell: "/jboss/jboss/bin/./standalone.sh -b 0.0.0.0 &"
+  # when: patch_done is changed
+
+...
