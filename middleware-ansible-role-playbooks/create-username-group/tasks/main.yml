@@ -1,0 +1,22 @@
+---
+# tasks file for create_user
+
+- name: Creating Owner Group
+  group:
+          name: "{{ owner_groupname }}"
+          gid: "{{ service_account_groupname_gid }}"
+          state: present
+
+- name: Creating User
+  user: 
+          name: "{{ owner_username }}"
+          groups: 
+                  - "{{ owner_groupname }}"
+          append: yes
+          home: "{{ owner_username_home }}"
+          uid: "{{ service_account_username_uid }}"
+          shell: "{{ owner_username_shell }}"
+          password: "{{ owner_passwd }}"
+        #   password: "{{ owner_passwd | password_hash('sha512') }}"
+
+

@@ -1,0 +1,6 @@
+---
+# tasks file for create_vault
+- name: Encrypting Files
+  command: "ansible-vault encrypt {{item.file_to_encrypt}}  --vault-password-file {{item.password_file}} "
+  loop: "{{ files }}"
+  ignore_errors: yes

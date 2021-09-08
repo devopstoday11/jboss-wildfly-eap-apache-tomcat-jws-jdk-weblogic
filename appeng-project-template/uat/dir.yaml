@@ -1,0 +1,10 @@
+dir_inf:
+            - dir_path: /files
+              dir_owner: jboss
+              dir_group: jboss
+              dir_mode: '0755'
+
+            - dir_path: "/jboss"
+              dir_owner: jboss
+              dir_group: jboss
+              dir_mode: '0755'

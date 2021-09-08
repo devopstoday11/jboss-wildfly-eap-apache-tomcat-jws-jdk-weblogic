@@ -1,0 +1,166 @@
+---
+- name: Configuring JBoss Server
+  hosts: ongraph
+  gather_facts: no
+  become_user: root
+  become: yes
+  vars_files:
+      - secret.yaml
+  roles:
+      - role: create-user
+        owner_groupname: jboss
+        service_account_username_uid: 400
+        service_account_groupname_gid: 400
+        owner_username: jboss
+        owner_passwd: "{{ password }}"
+        owner_username_home: /home/{{ owner_username }}
+        owner_username_shell: /bin/bash
+      
+      - role: create-dir
+        dir_inf:
+            - dir_path: /files
+              dir_owner: jboss
+              dir_group: jboss
+              dir_mode: '0755'
+
+        common_dir_info:
+            - dir_path: "/java/openjava16"
+            - dir_path: "/java/openjava14"
+            - dir_path: "/java/openjava15"
+            - dir_path: "/java/oraclejava16"
+            - dir_path: "/java/oraclejava14"
+            - dir_path: "/java/oraclejava15"
+            - dir_path: "/jboss/jboss-7.4"
+            - dir_path: "/jboss/jboss-7.1"
+            - dir_path: "/jboss/jboss-7.3"
+        dir_owner: jboss
+        dir_group: jboss
+        dir_mode: '0755'
+
+      - role: install-java
+        open_jdk_details:
+          - open_jdk_download_url: https://ongraphtechnologies.s3.amazonaws.com/openjdk-16.0.1_linux-x64_bin.tar.gz
+            open_jdk_download_dir: /files
+            open_jdk_file: openjdk-16.0.1_linux-x64_bin.tar.gz
+            open_jdk_library_dest: /java/openjava16
+        
+          - open_jdk_download_url: https://ongraphtechnologies.s3.amazonaws.com/openjdk-14_linux-x64_bin.tar.gz
+            open_jdk_download_dir: /files
+            open_jdk_file: openjdk-14_linux-x64_bin.tar.gz
+            open_jdk_library_dest: /java/openjava14
+
+          - open_jdk_download_url: https://ongraphtechnologies.s3.amazonaws.com/openjdk-15_windows-x64_bin.zip
+            open_jdk_download_dir: /files
+            open_jdk_file: openjdk-15_windows-x64_bin.zip
+            open_jdk_library_dest: /java/openjava15
+
+        oracle_jdk_details:
+          - oracle_jdk_download_url: https://ongraphtechnologies.s3.amazonaws.com/jdk-16.0.1_linux-x64_bin.tar.gz
+            oracle_jdk_download_dir: /files
+            oracle_jdk_file: jdk-16.0.1_linux-x64_bin.tar.gz
+            oracle_jdk_library_dest: /java/oraclejava16
+
+          - oracle_jdk_download_url: https://ongraphtechnologies.s3.amazonaws.com/jdk-14.0.2_linux-x64_bin.tar.gz
+            oracle_jdk_download_dir: /files
+            oracle_jdk_file: jdk-14.0.2_linux-x64_bin.tar.gz
+            oracle_jdk_library_dest: /java/oraclejava14
+
+          - oracle_jdk_download_url: https://ongraphtechnologies.s3.amazonaws.com/openjdk-14_windows-x64_bin.zip
+            oracle_jdk_download_dir: /files
+            oracle_jdk_file: openjdk-14_windows-x64_bin.zip
+            oracle_jdk_library_dest: /java/oraclejava15 
+
+        jdk_user: jboss
+        jdk_group: jboss
+        jdk_mode: 0755
+
+      - role: multi-install-jboss
+        jboss_eap_details:
+          - jboss_eap_download_url: https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.0.zip
+            jboss_eap_download_dir: /files
+            jboss_eap_zip_file: jboss-eap-7.3.0.zip
+            jboss_eap_dir_name: jboss-eap-7.3
+            jboss_eap_extract_dest: /jboss
+            jboss_eap_library_dest: /jboss/jboss-7.3/
+          
+          - jboss_eap_download_url: https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.1.0.zip
+            jboss_eap_download_dir: /files
+            jboss_eap_zip_file: jboss-eap-7.1.0.zip
+            jboss_eap_dir_name: jboss-eap-7.1
+            jboss_eap_extract_dest: /jboss
+            jboss_eap_library_dest: /jboss/jboss-7.1/
+
+          - jboss_eap_download_url: https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.4.0.zip
+            jboss_eap_download_dir: /files
+            jboss_eap_zip_file: jboss-eap-7.4.0.zip
+            jboss_eap_dir_name: jboss-eap-7.4
+            jboss_eap_extract_dest: /jboss
+            jboss_eap_library_dest: /jboss/jboss-7.4/
+
+        jboss_eap_user: jboss
+        jboss_eap_group: jboss
+        jboss_eap_mode: 0755
+
+      - role: multi-patch-jboss
+        # jboss_eap_patch_details:
+        jboss_eap_download_dir: /files
+        jboss_eap_patch_file: jboss-eap-7.3.6-patch.zip # Path of your ZIP file
+        jboss_eap_patch_file_url: https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.6-patch.zip
+        jboss_eap_jboss_home: /jboss/jboss-7.3
+        jboss_eap_home: /jboss/jboss-7.3
+        jboss_eap_patch_dest: /files/jboss-eap-7.3.6-patch.zip
+        jboss_eap_patch_artifact_name: jboss-eap-7.3.6-patch.zip
+        jboss_eap_user: jboss
+      
+      - role: multi-patch-jboss
+        # jboss_eap_patch_details:
+        jboss_eap_download_dir: /files
+        jboss_eap_patch_file: jboss-eap-7.3.7-patch.zip # Path of your ZIP file
+        jboss_eap_patch_file_url: https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.7-patch.zip
+        jboss_eap_jboss_home: /jboss/jboss-7.3
+        jboss_eap_home: /jboss/jboss-7.3
+        jboss_eap_patch_dest: /files/jboss-eap-7.3.7-patch.zip
+        jboss_eap_patch_artifact_name: jboss-eap-7.3.7-patch.zip
+        jboss_eap_user: jboss
+      
+      - role: multi-patch-jboss
+        # jboss_eap_patch_details:
+        jboss_eap_download_dir: /files
+        jboss_eap_patch_file: jboss-eap-7.3.8-patch.zip # Path of your ZIP file
+        jboss_eap_patch_file_url: https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.8-patch.zip
+        jboss_eap_jboss_home: /jboss/jboss-7.3
+        jboss_eap_home: /jboss/jboss-7.3
+        jboss_eap_patch_dest: /files/jboss-eap-7.3.8-patch.zip
+        jboss_eap_patch_artifact_name: jboss-eap-7.3.8-patch.zip
+        jboss_eap_user: jboss
+    
+
+...
+            
+
+
+# Oracle JDK tar
+# https://ongraphtechnologies.s3.amazonaws.com/jdk-16.0.1_linux-x64_bin.tar.gz
+# https://ongraphtechnologies.s3.amazonaws.com/jdk-14.0.2_linux-x64_bin.tar.gz
+# https://ongraphtechnologies.s3.amazonaws.com/jdk-8u291-linux-x64.tar.gz
+
+# Open JDK tar
+# https://ongraphtechnologies.s3.amazonaws.com/openjdk-16.0.1_linux-x64_bin.tar.gz
+# https://ongraphtechnologies.s3.amazonaws.com/openjdk-14_linux-x64_bin.tar.gz
+# https://ongraphtechnologies.s3.amazonaws.com/openjdk-13_linux-x64_bin.tar.gz
+
+# JDK zip
+# https://ongraphtechnologies.s3.amazonaws.com/openjdk-16.0.1_windows-x64_bin.zip
+# https://ongraphtechnologies.s3.amazonaws.com/openjdk-15_windows-x64_bin.zip
+# https://ongraphtechnologies.s3.amazonaws.com/openjdk-14_windows-x64_bin.zip
+# https://ongraphtechnologies.s3.amazonaws.com/openjdk-13_windows-x64_bin.zip
+
+# JBoss zip
+# https://ongraphtechnologies.s3.amazonaws.com/jboss-as-7.1.0.Final.zip
+# https://ongraphtechnologies.s3.amazonaws.com/jboss-as-web-7.0.0.Final.zip
+# https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.0.zip
+
+# 7.3.7 Patch https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.7-patch.zip
+# 7.3.6 Patch https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.6-patch.zip
+# 7.3.8 Patch https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.8-patch.zip
+

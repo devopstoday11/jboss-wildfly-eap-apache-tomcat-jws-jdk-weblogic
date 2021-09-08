@@ -1,0 +1,7 @@
+---
+# vars file for create_vault
+# files:
+#     - file_to_encrypt: /Users/adarshkumar/Documents/Ansible/OnGraph/test/bar.yml
+#       password_file: /Users/adarshkumar/Documents/Ansible/OnGraph/password
+#     - file_to_encrypt: /Users/adarshkumar/Documents/Ansible/OnGraph/test/baz.yml
+#       password_file: /Users/adarshkumar/Documents/Ansible/OnGraph/password

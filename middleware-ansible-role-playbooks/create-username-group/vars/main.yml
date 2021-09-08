@@ -1,0 +1,16 @@
+---
+# vars file for create_user
+# service_account_name: appadm
+# # owner_username: appadm
+# owner_username: !vault |
+#           $ANSIBLE_VAULT;1.1;AES256
+#           63656436356664336637396638633365633264323536623934636338636533633961643837373233
+#           3662303565303562383335333665363035316632663762370a636430633864616534306131343738
+#           61363762613363663163306162323437653536386364343934643964663061393933343766303235
+#           3837303039393134330a666461653139363536363561373436396234316330623631653637616630
+#           6135
+# owner_groupname: apps
+# service_account_username_uid: 504
+# service_account_groupname_gid: 504
+# owner_username_home: /home/{{ owner_username }}
+# owner_username_shell: /bin/bash

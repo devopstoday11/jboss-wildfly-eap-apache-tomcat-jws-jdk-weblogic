@@ -1,0 +1,87 @@
+---
+# tasks file for install_jboss
+- name: Register as user (joe_user) with password (somepass) and auto-subscribe to available content.
+  redhat_subscription:
+      state: present
+      username: i-adarsh
+      password: "{{ password }}"
+      autosubscribe: true
+  ignore_errors: yes
+
+- name: Creating Java Repository
+  yum_repository:
+      name: java
+      description: JAVA YUM Repository
+      baseurl: http://pkg.jenkins.io/redhat-stable
+      gpgcheck: 1
+                    
+- name: Installing RPM Keys
+  rpm_key:
+      state: present
+      key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+- name: Installing softwares
+  yum:
+      name: 
+            - java-11-openjdk-devel
+            - unzip
+            - tree
+      state: present
+          
+- name: Downloading JBoss "{{ item.jboss_eap_zip_file }}"
+  get_url:
+      url: "{{ item.jboss_eap_download_url }}"
+      dest: "{{ item.jboss_eap_download_dir }}/{{ item.jboss_eap_zip_file }}"
+      owner: "{{ jboss_eap_user }}"
+      group: "{{ jboss_eap_group }}"
+      mode: "{{ jboss_eap_mode }}"
+  loop: "{{ jboss_eap_details }}"
+  
+     
+- name: Extracting JBoss
+  become: yes
+  unarchive:
+      src: "{{ item.jboss_eap_download_dir}}/{{ item.jboss_eap_zip_file | basename }}"
+      dest: "{{ item.jboss_eap_extract_dest}}"
+      creates: "{{item.jboss_eap_extract_dest}}/{{item.jboss_eap_library_dest}}version.txt"
+      owner: "{{ jboss_eap_user }}"
+      group: "{{ jboss_eap_group }}"
+      mode: "{{ jboss_eap_mode }}"
+      remote_src: yes
+  loop: "{{ jboss_eap_details }}"
+  register: jboss_install
+          
+
+- name: Moving Files
+  shell: "sudo mv /jboss/{{item.jboss_eap_dir_name}}/* {{item.jboss_eap_library_dest}}"
+  loop: "{{ jboss_eap_details }}"
+  when: jboss_install is changed
+  ignore_errors: yes
+
+                    
+# - name: Exporting ClassPath
+#   shell: "{{ item }}"
+#   loop:
+#         - "export JBOSS_HOME=/jboss/jboss/"
+#   when: jboss_install is changed
+          
+# - name: Creating JBoss EAP Service 
+#   template:
+#       src: jboss.service.j2
+#       dest: /etc/systemd/system/jboss.service
+#             # script:
+#             #   cmd: script.sh
+#             # # shell: "{{ jboss_eap_home }}/bin/standalone.sh {{ cmd }}"
+#             # # vars:
+#             # #   cmd: >-
+#             # #     -b 0.0.0.0 &
+#             # # # shell: "/jboss/jboss/bin/./standalone.sh -b 0.0.0.0 &"
+#             # when: jboss_install is changed
+
+# - name: Starting Jboss EAP Service
+#   service:
+#       name: jboss.service
+#       state: started
+            
+
+...
