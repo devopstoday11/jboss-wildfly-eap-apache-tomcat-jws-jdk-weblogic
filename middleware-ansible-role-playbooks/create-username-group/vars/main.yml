@@ -1,7 +1,7 @@
 ---
 # vars file for create_user
-# service_account_name: appadm
-# # owner_username: appadm
+# service_account_name: jbossadmin
+# # owner_username: jbossadmin
 # owner_username: !vault |
 #           $ANSIBLE_VAULT;1.1;AES256
 #           63656436356664336637396638633365633264323536623934636338636533633961643837373233
