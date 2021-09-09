@@ -5,4 +5,4 @@
   loop: "{{ encryption }}"
   ignore_errors: yes
 
-# ansible-vault encrypt_string "appadm" --name "owner_username" >> secret.yaml
+# ansible-vault encrypt_string "jbossadmin" --name "owner_username" >> secret.yaml
