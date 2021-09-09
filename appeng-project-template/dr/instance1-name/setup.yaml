@@ -76,7 +76,7 @@
 
       - role: multi-install-jboss
         jboss_eap_details:
-          - jboss_eap_download_url: https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.0.zip
+          - jboss_eap_download_url: https://path-your-saved-your-binary-at/jboss-eap-7.3.0.zip
             jboss_eap_download_dir: /files
             jboss_eap_zip_file: jboss-eap-7.3.0.zip
             jboss_eap_dir_name: jboss-eap-7.3
@@ -127,7 +127,7 @@
         # jboss_eap_patch_details:
         jboss_eap_download_dir: /files
         jboss_eap_patch_file: jboss-eap-7.3.8-patch.zip # Path of your ZIP file
-        jboss_eap_patch_file_url: https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.8-patch.zip
+        jboss_eap_patch_file_url: https://path-your-saved-your-binary-at/jboss-eap-7.3.8-patch.zip
         jboss_eap_jboss_home: /jboss/jboss-7.3
         jboss_eap_home: /jboss/jboss-7.3
         jboss_eap_patch_dest: /files/jboss-eap-7.3.8-patch.zip
@@ -158,9 +158,9 @@
 # JBoss zip
 # https://ongraphtechnologies.s3.amazonaws.com/jboss-as-7.1.0.Final.zip
 # https://ongraphtechnologies.s3.amazonaws.com/jboss-as-web-7.0.0.Final.zip
-# https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.0.zip
+# https://path-your-saved-your-binary-at/jboss-eap-7.3.0.zip
 
 # 7.3.7 Patch https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.7-patch.zip
 # 7.3.6 Patch https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.6-patch.zip
-# 7.3.8 Patch https://ongraphtechnologies.s3.amazonaws.com/jboss-eap-7.3.8-patch.zip
+# 7.3.8 Patch https://path-your-saved-your-binary-at/jboss-eap-7.3.8-patch.zip
 
